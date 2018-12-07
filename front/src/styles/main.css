@@ -39,3 +39,40 @@
     color: #212529;
     background-color: #f8f9fa;
 }
+
+.game-board-wrap {
+    width: 75vw;
+    min-width: 75vw;
+    max-width: 75vw;
+    display: flex;
+}
+
+.game-board-wrap .point {
+    flex-direction: row;
+}
+
+/*.game-board-wrap .point .game-board-item {*/
+    /*flex-direction: row;*/
+    /*flex-wrap: nowrap;*/
+/*}*/
+
+.game-board-item {
+    width: 16vw;
+    height: 16vw;
+    min-height: 16vw;
+    min-width: 16vw;
+    font-size: 13vw;
+    line-height: 16vw;
+    text-align: center;
+    vertical-align: middle;
+}
+
+hr .vertical {
+    border: none;
+    border-left: 1px solid black;;
+    width: 2px;
+    background-color: black;
+    height: 16vw;
+    margin: 0;
+    padding: 0;
+}

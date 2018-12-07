@@ -4,7 +4,9 @@ import thunk from "redux-thunk";
 
 function userData(
     state = {
-        data: {}
+        data: {
+            type: 'x'
+        }
     },
     action
 ) {
