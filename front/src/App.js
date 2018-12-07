@@ -6,6 +6,7 @@ import './styles/main.css';
 
 import store from "./store/store";
 import StartPage from './components/StartPage';
+import NewGamePage from "./components/NewGamePage";
 
 class App extends Component {
   render() {
@@ -13,7 +14,8 @@ class App extends Component {
         <Provider store={store}>
             <Router>
                 <div>
-                    <Route exact path="/start" component={StartPage} />
+                    <Route exact path="/" component={StartPage} />
+                    <Route path='/new-game' component={NewGamePage}/>
                 </div>
             </Router>
         </Provider>

@@ -11,25 +11,16 @@ class StartPage extends React.Component{
         super(props);
         console.log(props);
     }
+
     render() {
         return (
             <div className='flex-column align-content-md-center'>
                 <div className='flex-center-wrap' style={{width: '50%'}}>
-                    <Button
-                        text={this.props.data.data.name || 'Enter name'}
-                        onClick={()=>this.props.data.data.name
-                            ? e => {e.preventDefault()}
-                            : this.props.setName(prompt('Your name'))
-                        }
-                        classList={['btn', 'btn-light', 'button-main']}
-                    />
+                    <h3>It's new game page dear {this.props.data.data.name}</h3>
                     <LinkButton
-                        text='new game'
+                        text='leave game'
                         classList={['btn', 'btn-light', 'button-main']}
-                        route='/new-game'
-                        onClick={()=>this.props.data.data.name
-                            ? (()=>{})
-                            : (this.props.setName(prompt('Your name')))}
+                        route='/'
                     />
                 </div>
             </div>
@@ -39,10 +30,6 @@ class StartPage extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
-    setName: data => dispatch({
-        type: "SET_NAME",
-        name: data
-    })
 });
 
 const mapStateToProps = state => ({

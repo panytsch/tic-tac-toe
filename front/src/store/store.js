@@ -3,12 +3,14 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
 
 function userData(
-    state = {},
+    state = {
+        data: {}
+    },
     action
 ) {
     switch (action.type) {
-        case "ADD_BOARD":
-            state.data[state.user.nickname][action.payload.id] = action.payload;
+        case "SET_NAME":
+            state.data.name = action.name;
             return { ...state };
         default:
             return state;
