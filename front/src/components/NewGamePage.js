@@ -2,21 +2,22 @@ import React from 'react';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
-import Button from './Button';
 import LinkButton from './LinkButton';
-import methods from '../store/methods';
+import GameBoard from "./GameBoard";
 
-class StartPage extends React.Component{
+class NewGamePage extends React.Component{
     constructor(props){
         super(props);
-        console.log(props);
+        // if (!this.props.data.data.name) {
+        //     this.props.history.push('/');
+        // }
     }
 
     render() {
         return (
             <div className='flex-column align-content-md-center'>
                 <div className='flex-center-wrap' style={{width: '50%'}}>
-                    <h3>It's new game page dear {this.props.data.data.name}</h3>
+                    <GameBoard/>
                     <LinkButton
                         text='leave game'
                         classList={['btn', 'btn-light', 'button-main']}
@@ -37,5 +38,5 @@ const mapStateToProps = state => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(
-    withRouter(StartPage)
+    withRouter(NewGamePage)
 );
