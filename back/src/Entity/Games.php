@@ -19,7 +19,9 @@ class Games
     const MOVE_X = 0;
     const MOVE_O = 1;
 
-    public static $winCombinations = [3885,777,30,425,5980,4058,1681,696];
+    public static $winCombinations = [3885, 777, 30, 425, 5980, 4058, 1681, 696];
+    public static $boardCost = [3, 8, 19, 46, 111, 268, 647, 1562, 3771];
+
     /**
      * @var int
      *
@@ -75,6 +77,24 @@ class Games
      */
     private $userOCount;
 
+    /**
+     * @return int|null
+     */
+    public function getUserOCount() :?int
+    {
+        return $this->userOCount;
+    }
+
+    /**
+     * @param int $userOCount
+     * @return Games
+     */
+    public function setUserOCount(int $userOCount) :self
+    {
+        $this->userOCount = $userOCount;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -125,6 +145,24 @@ class Games
     {
         $this->userO = $userO;
 
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserXCount() :?int
+    {
+        return $this->userXCount;
+    }
+
+    /**
+     * @param int $userXCount
+     * @return Games
+     */
+    public function setUserXCount(int $userXCount) :self
+    {
+        $this->userXCount = $userXCount;
         return $this;
     }
 
