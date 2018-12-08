@@ -27,6 +27,7 @@ class GamesController extends BaseController
                 'message' => 'User not found'
             ]);
         }
+        $type = null;
         $activeGames = $this->getActiveGames();
         if (!$activeGames){
             $game = new Games();
@@ -45,8 +46,10 @@ class GamesController extends BaseController
                     ]);
                 }
                 $game->setUserX($user);
+                $type = 'x';
             } else {
                 $game->setUserO($user);
+                $type = 'o';
             }
             $game->setStatus(Games::STATUS_ACTIVE_GAME);
         }
@@ -54,7 +57,8 @@ class GamesController extends BaseController
         $em->flush();
         return View::create([
             'status' => !!$game->getId(),
-            'gameId' => $game->getId()
+            'gameId' => $game->getId(),
+            'type' => $type
         ]);
     }
 
