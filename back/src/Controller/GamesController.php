@@ -18,6 +18,7 @@ class GamesController extends BaseController
     public function postJoinGame(Request $request)
     {
         $data = $this->getRequestDecoded($request);
+        $em = $this->getManager();
         $user = $this->getDoctrine()->getRepository(Users::class)->find($data['userId']);
         if (!$user) {
             return View::create([
@@ -25,6 +26,30 @@ class GamesController extends BaseController
                 'message' => 'User not found'
             ]);
         }
+        $activeGames = $this->getActiveGames();
+        if (!$activeGames){
+            $game = new Games();
+            $game->setUserO($user);
+            $game->setStatus(Games::STATUS_PENDING_USER);
+            $game->setWhoseMove(!!array_rand([Games::MOVE_O, Games::MOVE_X]));
+        } else {
+            /** @var Games $game */
+            $game = $activeGames[array_rand($activeGames)];
+//            var_dump($activeGames[0]->getId());
+//            die();
+            if ($game->getUserO()){
+                $game->setUserX($user);
+            } else {
+                $game->setUserO($user);
+            }
+            $game->setStatus(Games::STATUS_ACTIVE_GAME);
+        }
+        $em->persist($game);
+        $em->flush();
+        return View::create([
+            'status' => !!$game->getId(),
+            'gameId' => $game->getId()
+        ]);
     }
 
     /**
@@ -33,7 +58,11 @@ class GamesController extends BaseController
      */
     public function getTest()
     {
-        return View::create($this->getActiveGames());
+        $result = [3,8];
+        for ($i = 1; $i < 8; $i++){
+            $result[]= $result[$i]*2+$result[$i-1];
+        }
+        return View::create($result);
     }
 
     private function getActiveGames()

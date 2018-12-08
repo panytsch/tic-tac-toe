@@ -16,6 +16,10 @@ class Games
     const STATUS_ACTIVE_GAME = 2;
     const STATUS_FINISHED_GAME = 3;
 
+    const MOVE_X = 0;
+    const MOVE_O = 1;
+
+    public static $winCombinations = [3885,777,30,425,5980,4058,1681,696];
     /**
      * @var int
      *
@@ -58,6 +62,18 @@ class Games
      * })
      */
     private $userO;
+
+    /**
+     * @var
+     * @ORM\Column(name="user_x_count", type="integer", nullable=true)
+     */
+    private $userXCount;
+
+    /**
+     * @var
+     * @ORM\Column(name="user_o_count", type="integer", nullable=true)
+     */
+    private $userOCount;
 
     public function getId(): ?int
     {
