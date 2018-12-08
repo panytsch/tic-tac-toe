@@ -13,6 +13,9 @@ use Doctrine\ORM\Mapping\Entity;
  */
 class Users
 {
+    const STATUS_LEAVED = 0;
+    const STATUS_READY = 1;
+
     /**
      * @var int
      *

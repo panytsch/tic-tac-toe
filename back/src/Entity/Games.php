@@ -12,6 +12,10 @@ use Doctrine\ORM\Mapping\Entity;
  */
 class Games
 {
+    const STATUS_PENDING_USER = 1;
+    const STATUS_ACTIVE_GAME = 2;
+    const STATUS_FINISHED_GAME = 3;
+
     /**
      * @var int
      *
@@ -29,9 +33,9 @@ class Games
     private $whoseMove;
 
     /**
-     * @var bool
+     * @var int
      *
-     * @ORM\Column(name="status", type="boolean", nullable=false)
+     * @ORM\Column(name="status", type="smallint", nullable=false)
      */
     private $status;
 
@@ -72,12 +76,12 @@ class Games
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getStatus(): ?int
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): self
+    public function setStatus(int $status): self
     {
         $this->status = $status;
 

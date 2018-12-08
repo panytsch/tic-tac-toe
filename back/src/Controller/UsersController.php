@@ -27,11 +27,11 @@ class UsersController extends BaseController
         $user = new Users();
         $user
             ->setName($requestData['name'])
-            ->setIsActive(1);
+            ->setIsActive(Users::STATUS_READY);
         $em = $this->getManager();
         $em->persist($user);
         $em->flush();
-        return View::create(['status' => !!$user->getId()]);
+        return View::create(['status' => !!$user->getId(), 'userId' => $user->getId() ?? null]);
     }
 
     /**
