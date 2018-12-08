@@ -3,12 +3,13 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
  * Users
  *
+ * @Entity(repositoryClass="App\Repository\UsersRepository")
  * @ORM\Table(name="users")
- * @ORM\Entity
  */
 class Users
 {
@@ -29,41 +30,64 @@ class Users
     private $name;
 
     /**
-     * @var bool
+     * @var int
      *
-     * @ORM\Column(name="is_active", type="boolean", nullable=false)
+     * @ORM\Column(name="is_active", type="smallint", nullable=false)
      */
     private $isActive;
 
-    public function getId(): ?int
+    /**
+     * @return int
+     */
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    /**
+     * @param int $id
+     * @return Users
+     */
+    public function setId(int $id): Users
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    /**
+     * @param string $name
+     * @return Users
+     */
+    public function setName(string $name): Users
     {
         $this->name = $name;
-
         return $this;
     }
 
-    public function getIsActive(): ?bool
+    /**
+     * @return int
+     */
+    public function getisActive(): int
     {
         return $this->isActive;
     }
 
-
-    public function setIsActive(bool $isActive): self
+    /**
+     * @param int $isActive
+     * @return Users
+     */
+    public function setIsActive(int $isActive): Users
     {
         $this->isActive = $isActive;
-
         return $this;
     }
-
 
 }

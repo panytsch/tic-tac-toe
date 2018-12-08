@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Entity;
 
 /**
  * Games
- *
+ * @Entity(repositoryClass="App\Repository\GamesRepository")
  * @ORM\Table(name="games", indexes={@ORM\Index(name="user_o", columns={"user_o"}), @ORM\Index(name="user_x", columns={"user_x"})})
- * @ORM\Entity
  */
 class Games
 {
@@ -24,7 +24,7 @@ class Games
     /**
      * @var bool
      *
-     * @ORM\Column(name="whose_move", type="boolean", nullable=false)
+     * @ORM\Column(name="whose_move", type="boolean", nullable=true)
      */
     private $whoseMove;
 

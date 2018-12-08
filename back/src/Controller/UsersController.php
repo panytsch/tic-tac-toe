@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Entity\Users;
-use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
-class UsersController extends FOSRestController
+class UsersController extends BaseController
 {
-
     /**
      * @Rest\Post("/api/users/new")
      * @param Request $request
@@ -18,7 +16,8 @@ class UsersController extends FOSRestController
      */
     public function postNewUser(Request $request)
     {
-        $requestData = json_decode($request->getContent(), true);
+        $this->getDoctrine()->getRepository(Users::class)->dropNonActiveUsers();
+        $requestData = $this->getRequestDecoded($request);
         if (!isset($requestData['name']) || empty($requestData['name']) || !is_string($requestData['name'])){
             return View::create([
                 'status' => false,
@@ -28,9 +27,8 @@ class UsersController extends FOSRestController
         $user = new Users();
         $user
             ->setName($requestData['name'])
-            ->setIsActive(false)
-        ;
-        $em = $this->getDoctrine()->getManager();
+            ->setIsActive(1);
+        $em = $this->getManager();
         $em->persist($user);
         $em->flush();
         return View::create(['status' => !!$user->getId()]);
