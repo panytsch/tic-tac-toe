@@ -57,6 +57,7 @@ class Users
         return $this->isActive;
     }
 
+
     public function setIsActive(bool $isActive): self
     {
         $this->isActive = $isActive;
