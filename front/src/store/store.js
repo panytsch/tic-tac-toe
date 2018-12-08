@@ -27,7 +27,8 @@ function userData(
 ) {
     switch (action.type) {
         case "SET_NAME":
-            state.data.name = action.name;
+            state.data.name = action.payload.name;
+            state.data.userId = action.payload.userId;
             return { ...state };
         default:
             return state;
