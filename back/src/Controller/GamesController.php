@@ -66,6 +66,7 @@ class GamesController extends BaseController
      * @Rest\Post("/api/games/turn")
      * @param Request $request
      * @return View
+     * @throws \Exception
      */
     public function postTurn(Request $request)
     {
@@ -110,6 +111,7 @@ class GamesController extends BaseController
                 $winner = $game->getUserX()->getName();
             }
         }
+        $game->setLastMove(new \DateTime());
         $em = $this->getManager();
         $em->persist($game);
         $em->flush();
@@ -122,16 +124,43 @@ class GamesController extends BaseController
     }
 
     /**
-     * @Rest\Get("/api/games/test")
+     * @Rest\Get("/api/games/request-to-win")
+     * @param Request $request
      * @return View
      */
-    public function getTest()
+    public function getIsWinner(Request $request)
     {
-        $result = [3,8];
-        for ($i = 1; $i < 8; $i++){
-            $result[]= $result[$i]*2+$result[$i-1];
+        if (empty($request->get('gameId')))
+        {
+            return View::create([
+                'status' => false
+            ]);
         }
-        return View::create($result);
+        /** @var Games $game */
+        $game = $this
+            ->getDoctrine()
+            ->getRepository(Games::class)
+            ->find($request->get('gameId'));
+        if (!$game){
+            return View::create([
+                'status' => false,
+                'message' => 'Game not found'
+            ]);
+        }
+        // 60 sec per one turn
+        if ((time() - $game->getLastMove()->getTimestamp()) > 60){
+            $game->setWhoseMove(!$game->getWhoseMove());
+            $game->setStatus(Games::STATUS_FINISHED_GAME);
+            $em = $this->getManager();
+            $em->persist($game);
+            $em->flush();
+            return View::create([
+                'status' => true
+            ]);
+        }
+        return View::create([
+            'status' => false,
+        ]);
     }
 
     private function getActiveGames()

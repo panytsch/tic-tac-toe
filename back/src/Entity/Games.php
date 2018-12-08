@@ -46,7 +46,7 @@ class Games
     private $status;
 
     /**
-     * @var \Users
+     * @var \Users|null
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
@@ -56,7 +56,7 @@ class Games
     private $userX;
 
     /**
-     * @var \Users
+     * @var \Users|null
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
@@ -76,6 +76,31 @@ class Games
      * @ORM\Column(name="user_o_count", type="integer", nullable=true)
      */
     private $userOCount;
+
+    /**
+     * @var \DateTime
+     * @ORM\Column(name="last_move", type="datetime", nullable=true)
+     */
+    private $lastMove;
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastMove(): \DateTime
+    {
+        return $this->lastMove;
+    }
+
+    /**
+     * @param \DateTime $lastMove
+     * @return Games
+     */
+    public function setLastMove(\DateTime $lastMove): self
+    {
+        $this->lastMove = $lastMove;
+        return $this;
+    }
+
 
     /**
      * @return int|null
