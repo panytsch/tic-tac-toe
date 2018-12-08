@@ -36,9 +36,14 @@ class GamesController extends BaseController
         } else {
             /** @var Games $game */
             $game = $activeGames[array_rand($activeGames)];
-//            var_dump($activeGames[0]->getId());
-//            die();
+
             if ($game->getUserO()){
+                if ($game->getUserO()->getId() === $user->getId()){
+                    return View::create([
+                        'status' => true,
+                        'pending' => true
+                    ]);
+                }
                 $game->setUserX($user);
             } else {
                 $game->setUserO($user);
