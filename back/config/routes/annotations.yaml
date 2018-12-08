@@ -1,0 +1,10 @@
+controllers:
+    resource: ../../src/Controller/
+    type: annotation
+#web_controllers:
+#    resource: ../../src/Controller/Web
+#    type: annotation
+#rest_controller:
+#    resource: ../../src/Controller/
+#    type: annotation
+#    prefix: /api

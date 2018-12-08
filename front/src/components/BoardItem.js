@@ -15,6 +15,25 @@ const types = {
 };
 
 class Item extends React.Component {
+    constructor(props){
+        super(props);
+        this.state = {
+            done: false
+        };
+    }
+    componentDidMount() {
+        if (this.props.data.currentGame[this.props.number]){
+            console.log(this.props.data.currentGame[this.props.number]);
+            this.setState({done:true});
+        }
+    }
+
+    myTurn(){
+        if (this.props.data.game.myTurn){
+            ///////
+            this.setState({done:true})
+        }
+    }
 
     render() {
         const {number} = this.props;
@@ -27,8 +46,14 @@ class Item extends React.Component {
                     borderBottom: types[number][2] && '2px solid black',
                     borderLeft: types[number][3] && '2px solid black',
                 }}
+                onClick={this.state.done
+                    ? () => {}
+                    : () => this.myTurn()
+                }
             >
-                {number}
+                {(this.props.data.currentGame[number] || this.state.done)
+                    ? this.props.data.data.type
+                    : ''}
             </div>
         );
     }

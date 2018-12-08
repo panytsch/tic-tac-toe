@@ -9,8 +9,11 @@ import methods from '../store/methods';
 class StartPage extends React.Component{
     constructor(props){
         super(props);
-        console.log(props);
     }
+    componentDidMount() {
+        console.log(this.props.data);
+    }
+
     render() {
         return (
             <div className='flex-column align-content-md-center'>
@@ -39,10 +42,7 @@ class StartPage extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
-    setName: data => dispatch({
-        type: "SET_NAME",
-        name: data
-    })
+    setName: data => dispatch(methods.setName(data))
 });
 
 const mapStateToProps = state => ({

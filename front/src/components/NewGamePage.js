@@ -8,9 +8,9 @@ import GameBoard from "./GameBoard";
 class NewGamePage extends React.Component{
     constructor(props){
         super(props);
-        // if (!this.props.data.data.name) {
-        //     this.props.history.push('/');
-        // }
+        if (!this.props.data.data.name) {
+            this.props.history.push('/');
+        }
     }
 
     render() {
