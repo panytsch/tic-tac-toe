@@ -33,4 +33,12 @@ class UsersController extends BaseController
         $em->flush();
         return View::create(['status' => !!$user->getId()]);
     }
+
+    /**
+     * @Rest\Get("/")
+     */
+    public function getOk()
+    {
+        return View::create(['status' => 'api work']);
+    }
 }
