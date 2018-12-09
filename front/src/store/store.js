@@ -5,8 +5,9 @@ import thunk from "redux-thunk";
 function userData(
     state = {
         data: {
-            type: 'x',
+            type: null, // 'x' or 'o'
             name: null,
+            userId: null,
         },
         currentGame: {
             1: false,
@@ -20,8 +21,10 @@ function userData(
             9: false
         },
         game: {
-            myTurn: true
-        }
+            myTurn: null,
+            gameId: null
+        },
+        timeoutId: null,
     },
     action
 ) {
@@ -30,6 +33,30 @@ function userData(
             state.data.name = action.payload.name;
             state.data.userId = action.payload.userId;
             return { ...state };
+        case 'FOUNDED_GAME':
+            state.data.type = action.payload.type;
+            state.game.myTurn = action.payload.type === 'o';
+            state.game.gameId = action.payload.gameId;
+            clearInterval(state.timeoutId);
+            return {...state};
+        case 'PENDING_GAME':
+            state.game.gameId = action.payload.gameId;
+            return state;
+        case 'SAVE_TIMEOUT':
+            state.timeoutId = action.timeoutId;
+            return state;
+        case 'CLEAR_INTERVAL':
+            clearInterval(state.timeoutId);
+            return state;
+        case 'LEAVE_GAME':
+            state.data.type = null;
+            state.game.gameId = null;
+            state.game.myTurn = null;
+            return {...state};
+        case 'MAKE_TURN':
+            state.currentGame[action.payload.itemNumber] = false;
+            state.game.myTurn = false;
+            return {...state};
         default:
             return state;
     }

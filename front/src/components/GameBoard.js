@@ -3,13 +3,16 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 
 import BoardItem from "./BoardItem";
+import methods from "../store/methods";
 
 class GameBoard extends React.Component{
     constructor(props){
         super(props);
-        console.log(props);
+        let timeoutId = setInterval(() => {
+            props.searchOpponent(props.data.data.userId, props.data.game.gameId || null);
+        }, 2000);
+        props.setTimeoutId(timeoutId);
     }
-
     render() {
         return (
             <div className='game-board-wrap'>
@@ -35,7 +38,11 @@ class GameBoard extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
-
+    searchOpponent: (userId, gameId) => dispatch(methods.searchOpponent(userId, gameId)),
+    setTimeoutId: timeoutId => dispatch({
+        type: 'SAVE_TIMEOUT',
+        timeoutId: timeoutId
+    })
 });
 
 const mapStateToProps = state => ({

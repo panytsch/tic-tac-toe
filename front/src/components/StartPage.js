@@ -11,7 +11,7 @@ class StartPage extends React.Component{
         super(props);
     }
     componentDidMount() {
-        console.log(this.props.data);
+        this.props.clearInterval();
     }
 
     render() {
@@ -20,7 +20,7 @@ class StartPage extends React.Component{
                 <div className='flex-center-wrap' style={{width: '50%'}}>
                     <Button
                         text={this.props.data.data.name || 'Enter name'}
-                        onClick={()=>this.props.data.data.name
+                        onClick={()=>this.props.data.data.userId
                             ? e => {e.preventDefault()}
                             : this.props.setName(prompt('Your name'))
                         }
@@ -30,7 +30,7 @@ class StartPage extends React.Component{
                         text='new game'
                         classList={['btn', 'btn-light', 'button-main']}
                         route='/new-game'
-                        onClick={()=>this.props.data.data.name
+                        onClick={()=>this.props.data.data.userId
                             ? (()=>{})
                             : (this.props.setName(prompt('Your name')))}
                     />
@@ -42,7 +42,8 @@ class StartPage extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
-    setName: data => dispatch(methods.setName(data))
+    setName: data => dispatch(methods.setName(data)),
+    clearInterval: () => dispatch({type: 'CLEAR_INTERVAL'})
 });
 
 const mapStateToProps = state => ({

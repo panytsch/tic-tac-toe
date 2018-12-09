@@ -41,9 +41,9 @@
 }
 
 .game-board-wrap {
-    width: 75vw;
-    min-width: 75vw;
-    max-width: 75vw;
+    width: 60vw;
+    min-width: 60vw;
+    max-width: 60vw;
     display: flex;
 }
 

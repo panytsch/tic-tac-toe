@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import methods from "../store/methods";
 
 const types = {
     1: [0,1,1,0],
@@ -17,21 +18,15 @@ const types = {
 class Item extends React.Component {
     constructor(props){
         super(props);
-        this.state = {
-            done: false
-        };
-    }
-    componentDidMount() {
-        if (this.props.data.currentGame[this.props.number]){
-            console.log(this.props.data.currentGame[this.props.number]);
-            this.setState({done:true});
-        }
     }
 
     myTurn(){
         if (this.props.data.game.myTurn){
-            ///////
-            this.setState({done:true})
+            this.props.makeTurn(
+                this.props.data.data.userId,
+                this.props.data.game.gameId,
+                this.props.number
+            );
         }
     }
 
@@ -46,12 +41,12 @@ class Item extends React.Component {
                     borderBottom: types[number][2] && '2px solid black',
                     borderLeft: types[number][3] && '2px solid black',
                 }}
-                onClick={this.state.done
+                onClick={(this.props.data.game.myTurn && this.props.data.currentGame[number])
                     ? () => {}
                     : () => this.myTurn()
                 }
             >
-                {(this.props.data.currentGame[number] || this.state.done)
+                {this.props.data.currentGame[number]
                     ? this.props.data.data.type
                     : ''}
             </div>
@@ -60,7 +55,7 @@ class Item extends React.Component {
 }
 
 const mapDispatchToProps = dispatch => ({
-
+    makeTurn: (userId, gameId, itemNumber) => dispatch(methods.makeTurn(userId, gameId, itemNumber))
 });
 
 const mapStateToProps = state => ({
