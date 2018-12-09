@@ -29,14 +29,14 @@ const methods = {
                             gameId: data.gameId,
                             type: data.type
                         }
-                    })
+                    });
                 } else if (data.pending && data.gameId){
                     dispatch({
                         type: 'PENDING_GAME',
                         payload: {
                             gameId: data.gameId
                         }
-                    })
+                    });
                 }
             })
     },
@@ -45,8 +45,31 @@ const methods = {
             .then(() => {
                 dispatch({
                     type: 'LEAVE_GAME',
-                })
+                });
             })
+    },
+    makeTurn: (userId, gameId, itemNumber) => dispatch => {
+        axios.post(`${host}games/turn`,
+            {
+                userId: userId,
+                gameId: gameId,
+                itemNumber: itemNumber
+            })
+            .then(({data}) => {
+                console.log(data);
+                if (data.status){
+                    if (data.win){
+                        // set winner
+                    }
+                    dispatch({
+                        type: 'MAKE_TURN',
+                        payload: {
+                            itemNumber: itemNumber
+                        }
+                    });
+                }
+            })
+        ;
     }
 };
 

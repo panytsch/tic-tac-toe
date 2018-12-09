@@ -125,14 +125,14 @@ class GamesController extends BaseController
                 'winner' => $winner
             ]);
         }
-        if ($game->getUserO() === (int)$data['userId'] && $game->getWhoseMove() === Games::MOVE_O){
+        if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O){
             $game->setUserOCount($game->getUserOCount() + Games::$boardCost[$data['itemNumber']]);
             if (in_array($game->getUserOCount(), Games::$winCombinations)){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
             } else {
                 $game->setWhoseMove(Games::MOVE_X);
             }
-        } else if ($game->getUserX() === (int)$data['userId'] && $game->getWhoseMove() === Games::MOVE_X) {
+        } else if ($game->getUserX()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_X) {
             $game->setUserXCount($game->getUserXCount() + Games::$boardCost[$data['itemNumber']]);
             if (in_array($game->getUserXCount(), Games::$winCombinations)){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);

@@ -53,6 +53,10 @@ function userData(
             state.game.gameId = null;
             state.game.myTurn = null;
             return {...state};
+        case 'MAKE_TURN':
+            state.currentGame[action.payload.itemNumber] = false;
+            state.game.myTurn = false;
+            return {...state};
         default:
             return state;
     }
