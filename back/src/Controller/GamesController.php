@@ -18,6 +18,11 @@ class GamesController extends BaseController
     public function postJoinGame(Request $request)
     {
         $data = $this->getRequestDecoded($request);
+        if (empty($data['userId'])) {
+            return View::create([
+                'status' => false
+            ]);
+        }
         $em = $this->getManager();
         /** @var Users $user */
         $user = $this->getDoctrine()->getRepository(Users::class)->find($data['userId']);
@@ -42,7 +47,8 @@ class GamesController extends BaseController
                 if ($game->getUserO()->getId() === $user->getId()){
                     return View::create([
                         'status' => true,
-                        'pending' => true
+                        'pending' => true,
+                        'gameId' => $game->getId(),
                     ]);
                 }
                 $game->setUserX($user);
@@ -84,19 +90,30 @@ class GamesController extends BaseController
                 'status' => false,
                 'message' => 'game not found'
             ]);
+        } else if ($game->getStatus() === Games::STATUS_FINISHED_GAME){
+            $winner = $game->getWhoseMove() === Games::MOVE_X
+                ? $game->getUserX()->getName()
+                : $game->getUserO()->getName();
+            return View::create([
+                'status' => true,
+                'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
+                'winner' => $winner
+            ]);
         }
         if ($game->getUserO() === (int)$data['userId'] && $game->getWhoseMove() === Games::MOVE_O){
             $game->setUserOCount($game->getUserOCount() + Games::$boardCost[$data['itemNumber']]);
             if (in_array($game->getUserOCount(), Games::$winCombinations)){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
+            } else {
+                $game->setWhoseMove(Games::MOVE_X);
             }
-            $game->setWhoseMove(Games::MOVE_X);
         } else if ($game->getUserX() === (int)$data['userId'] && $game->getWhoseMove() === Games::MOVE_X) {
             $game->setUserXCount($game->getUserXCount() + Games::$boardCost[$data['itemNumber']]);
             if (in_array($game->getUserXCount(), Games::$winCombinations)){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
+            } else {
+                $game->setWhoseMove(Games::MOVE_O);
             }
-            $game->setWhoseMove(Games::MOVE_O);
         } else {
             return View::create([
                 'status' => false,
@@ -160,6 +177,39 @@ class GamesController extends BaseController
         }
         return View::create([
             'status' => false,
+        ]);
+    }
+
+    /**
+     * @Rest\Post("/api/games/leave")
+     * @param Request $request
+     * @return View
+     */
+    public function postLeaveGame(Request $request)
+    {
+        $data = $this->getRequestDecoded($request);
+        if (empty($data['userId']) || empty($data['gameId'])){
+            return View::create([
+                'status' => false
+            ]);
+        }
+        /** @var Games $game */
+        $game = $this->getDoctrine()->getRepository(Games::class)->find($data['gameId']);
+        if ($game->getUserO()->getId() === (int)$data['userId']){
+            $game->setWhoseMove(Games::MOVE_X)
+                ->setStatus(Games::STATUS_FINISHED_GAME)
+            ;
+        } else if ($game->getUserX()->getId() === (int)$data['userId']) {
+            $game->setWhoseMove(Games::MOVE_O)
+                ->setStatus(Games::STATUS_FINISHED_GAME);
+        }
+        $em = $this->getManager();
+        $em->persist($game);
+        $em->flush();
+        return View::create([
+            'status' => true,
+            'userId' => $data['userId'],
+            'gameId' => $data['gameId'],
         ]);
     }
 

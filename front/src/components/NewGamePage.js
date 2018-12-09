@@ -4,11 +4,12 @@ import { withRouter } from "react-router-dom";
 
 import LinkButton from './LinkButton';
 import GameBoard from "./GameBoard";
+import methods from "../store/methods";
 
 class NewGamePage extends React.Component{
     constructor(props){
         super(props);
-        if (!this.props.data.data.name) {
+        if (!this.props.data.data.userId) {
             this.props.history.push('/');
         }
     }
@@ -22,6 +23,7 @@ class NewGamePage extends React.Component{
                         text='leave game'
                         classList={['btn', 'btn-light', 'button-main']}
                         route='/'
+                        onClick={()=>this.props.leaveGame(this.props.data.data.userId, this.props.data.game.gameId)}
                     />
                 </div>
             </div>
@@ -31,6 +33,7 @@ class NewGamePage extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
+    leaveGame: (userId, gameId) => dispatch(methods.leaveGame(userId, gameId))
 });
 
 const mapStateToProps = state => ({

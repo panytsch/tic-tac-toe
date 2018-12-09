@@ -17,6 +17,36 @@ const methods = {
                     });
                 }
             })
+    },
+    searchOpponent: userId => dispatch => {
+        axios.post(`${host}games/join`,{userId:userId})
+            .then(({data}) => {
+                console.log(data);
+                if (data.status && data.type && data.gameId) {
+                    dispatch({
+                        type: 'FOUNDED_GAME',
+                        payload: {
+                            gameId: data.gameId,
+                            type: data.type
+                        }
+                    })
+                } else if (data.pending && data.gameId){
+                    dispatch({
+                        type: 'PENDING_GAME',
+                        payload: {
+                            gameId: data.gameId
+                        }
+                    })
+                }
+            })
+    },
+    leaveGame: (userId, gameId) => dispatch => {
+        axios.post(`${host}games/leave`, {userId: userId, gameId: gameId})
+            .then(() => {
+                dispatch({
+                    type: 'LEAVE_GAME',
+                })
+            })
     }
 };
 
