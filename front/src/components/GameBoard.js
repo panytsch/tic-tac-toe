@@ -8,9 +8,8 @@ import methods from "../store/methods";
 class GameBoard extends React.Component{
     constructor(props){
         super(props);
-        console.log(props);
         let timeoutId = setInterval(() => {
-            props.searchOpponent(props.data.data.userId);
+            props.searchOpponent(props.data.data.userId, props.data.game.gameId || null);
         }, 2000);
         props.setTimeoutId(timeoutId);
     }
@@ -39,7 +38,7 @@ class GameBoard extends React.Component{
 
 
 const mapDispatchToProps = dispatch => ({
-    searchOpponent: userId => dispatch(methods.searchOpponent(userId)),
+    searchOpponent: (userId, gameId) => dispatch(methods.searchOpponent(userId, gameId)),
     setTimeoutId: timeoutId => dispatch({
         type: 'SAVE_TIMEOUT',
         timeoutId: timeoutId

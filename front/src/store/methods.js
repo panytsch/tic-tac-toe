@@ -18,8 +18,8 @@ const methods = {
                 }
             })
     },
-    searchOpponent: userId => dispatch => {
-        axios.post(`${host}games/join`,{userId:userId})
+    searchOpponent: (userId, gameId) => dispatch => {
+        axios.post(`${host}games/join`,{userId:userId, gameId: gameId})
             .then(({data}) => {
                 console.log(data);
                 if (data.status && data.type && data.gameId) {

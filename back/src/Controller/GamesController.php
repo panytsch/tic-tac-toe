@@ -23,6 +23,7 @@ class GamesController extends BaseController
                 'status' => false
             ]);
         }
+        $currentGame = null;
         $em = $this->getManager();
         /** @var Users $user */
         $user = $this->getDoctrine()->getRepository(Users::class)->find($data['userId']);
@@ -33,34 +34,58 @@ class GamesController extends BaseController
             ]);
         }
         $type = null;
+        if (!empty($data['gameId'])){
+            /** @var Games $currentGame */
+            $currentGame = $this->getDoctrine()
+                ->getRepository(Games::class)
+                ->find($data['gameId']);
+            if (!$currentGame){
+                return View::create([
+                    'status' =>false
+                ]);
+            }
+            if ($currentGame->getStatus() === Games::STATUS_ACTIVE_GAME){
+                return View::create([
+                    'status' => true,
+                    'gameId' => $currentGame->getId(),
+                    'type' => $currentGame->getUserO()->getId() === $user->getId() ? 'o' : 'x'
+                ]);
+            }
+        }
         $activeGames = $this->getActiveGames();
         if (!$activeGames){
             $game = new Games();
             $game->setUserO($user);
             $game->setStatus(Games::STATUS_PENDING_USER);
-            $game->setWhoseMove(!!array_rand([Games::MOVE_O, Games::MOVE_X]));
-        } else {
-            /** @var Games $game */
-            $game = $activeGames[array_rand($activeGames)];
-
-            if ($game->getUserO()){
-                if ($game->getUserO()->getId() === $user->getId()){
-                    return View::create([
-                        'status' => true,
-                        'pending' => true,
-                        'gameId' => $game->getId(),
-                    ]);
-                }
-                $game->setUserX($user);
-                $type = 'x';
-            } else {
-                $game->setUserO($user);
-                $type = 'o';
-            }
-            $game->setStatus(Games::STATUS_ACTIVE_GAME);
+            $game->setWhoseMove(Games::MOVE_O);
+            $em->persist($game);
+            $em->flush();
+            return View::create([
+                'status' => true,
+                'pending' => true,
+                'gameId' => $game->getId(),
+            ]);
         }
+        /** @var Games $game */
+        $game = $activeGames[array_rand($activeGames)];
+        if ($game->getUserO()->getId() === $user->getId()){
+            return View::create([
+                'status' => true,
+                'pending' => true,
+                'gameId' => $game->getId(),
+            ]);
+        }
+        if ($game->getUserO()){
+            $game->setUserX($user);
+            $type = 'x';
+        } else {
+            $game->setUserO($user);
+            $type = 'o';
+        }
+        $game->setStatus(Games::STATUS_ACTIVE_GAME);
         $em->persist($game);
         $em->flush();
+
         return View::create([
             'status' => !!$game->getId(),
             'gameId' => $game->getId(),
