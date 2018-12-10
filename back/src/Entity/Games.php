@@ -253,8 +253,11 @@ class Games
         return $this->isItWinCombination($this->getUserXCount());
     }
 
-    private function isItWinCombination(array $a) :bool
+    private function isItWinCombination(array $a = null) :bool
     {
+        if (empty($a)){
+            return false;
+        }
         return (
         (in_array(1,$a) && in_array(2,$a) && in_array(3,$a))
             ||
