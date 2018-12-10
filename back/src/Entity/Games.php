@@ -19,9 +19,6 @@ class Games
     const MOVE_X = 0;
     const MOVE_O = 1;
 
-    public static $winCombinations = [3885, 777, 30, 425, 5980, 4058, 1681, 696];
-    public static $boardCost = [3, 8, 19, 46, 111, 268, 647, 1562, 3771];
-
     /**
      * @var int
      *
@@ -46,7 +43,7 @@ class Games
     private $status;
 
     /**
-     * @var \Users|null
+     * @var Users|null
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
@@ -56,7 +53,7 @@ class Games
     private $userX;
 
     /**
-     * @var \Users|null
+     * @var Users|null
      *
      * @ORM\ManyToOne(targetEntity="Users")
      * @ORM\JoinColumns({
@@ -67,13 +64,13 @@ class Games
 
     /**
      * @var
-     * @ORM\Column(name="user_x_count", type="integer", nullable=true)
+     * @ORM\Column(name="user_x_count", type="text", nullable=true)
      */
     private $userXCount;
 
     /**
      * @var
-     * @ORM\Column(name="user_o_count", type="integer", nullable=true)
+     * @ORM\Column(name="user_o_count", type="text", nullable=true)
      */
     private $userOCount;
 
@@ -103,20 +100,20 @@ class Games
 
 
     /**
-     * @return int|null
+     * @return array|null
      */
-    public function getUserOCount() :?int
+    public function getUserOCount() :?array
     {
-        return $this->userOCount;
+        return json_decode($this->userOCount, true);
     }
 
     /**
-     * @param int $userOCount
+     * @param string $userOCount
      * @return Games
      */
-    public function setUserOCount(int $userOCount) :self
+    public function setUserOCount(string $userOCount) :self
     {
-        $this->userOCount = $userOCount;
+        $this->userOCount = json_encode($userOCount);
         return $this;
     }
 
@@ -174,22 +171,106 @@ class Games
     }
 
     /**
-     * @return int|null
+     * @return array|null
      */
-    public function getUserXCount() :?int
+    public function getUserXCount() :?array
     {
-        return $this->userXCount;
+        return json_decode($this->userXCount, true);
     }
 
     /**
-     * @param int $userXCount
+     * @param string $userXCount
      * @return Games
      */
-    public function setUserXCount(int $userXCount) :self
+    public function setUserXCount(string $userXCount) :self
     {
-        $this->userXCount = $userXCount;
+        $this->userXCount = json_encode($userXCount);
         return $this;
     }
 
+    /**
+     * @param int $value
+     * @return Games
+     */
+    public function updateUserOCount(int $value) :self
+    {
+        $count = json_encode($this->userOCount);
+        if ($count){
+            $count[] = $value;
+        } else {
+            $count = [$value];
+        }
+        $this->userOCount = json_encode($count);
+        return $this;
+    }
+    
+    /**
+     * @param int $value
+     * @return Games
+     */
+    public function updateUserXCount(int $value) :self
+    {
+        $count = json_encode($this->userXCount);
+        if ($count){
+            $count[] = $value;
+        } else {
+            $count = [$value];
+        }
+        $this->userXCount = json_encode($count);
+        return $this;
+    }
 
+    /**
+     * @return bool
+     */
+    public function hasGameWinner() :bool 
+    {
+        return $this->isUserOWinner() || $this->isUserXWinner();
+    }
+
+    /**
+     * @return Users|null
+     */
+    public function getWinner() :?Users
+    {
+        if ($this->status === self::STATUS_FINISHED_GAME){
+            if ($this->whoseMove === self::MOVE_X){
+                return $this->userX;
+            } else if ($this->whoseMove === self::MOVE_O){
+                return $this->userO;
+            }
+        } 
+        return null;
+    }
+
+    private function isUserOWinner() :bool
+    {
+        return $this->isItWinCombination($this->getUserOCount());
+    }
+
+    private function isUserXWinner() :bool
+    {
+        return $this->isItWinCombination($this->getUserXCount());
+    }
+
+    private function isItWinCombination(array $a) :bool
+    {
+        return (
+        (in_array(1,$a) && in_array(2,$a) && in_array(3,$a))
+            ||
+        (in_array(1,$a) && in_array(5,$a) && in_array(9,$a))
+            ||
+        (in_array(1,$a) && in_array(4,$a) && in_array(7,$a))
+            ||
+        (in_array(4,$a) && in_array(5,$a) && in_array(6,$a))
+            ||
+        (in_array(7,$a) && in_array(8,$a) && in_array(9,$a))
+            ||
+        (in_array(2,$a) && in_array(5,$a) && in_array(8,$a))
+            ||
+        (in_array(3,$a) && in_array(6,$a) && in_array(9,$a))
+            ||
+        (in_array(3,$a) && in_array(5,$a) && in_array(7,$a))
+        );
+    }
 }

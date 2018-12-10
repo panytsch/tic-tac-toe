@@ -116,42 +116,27 @@ class GamesController extends BaseController
                 'message' => 'game not found'
             ]);
         } else if ($game->getStatus() === Games::STATUS_FINISHED_GAME){
-            $winner = $game->getWhoseMove() === Games::MOVE_X
-                ? $game->getUserX()->getName()
-                : $game->getUserO()->getName();
             return View::create([
                 'status' => true,
                 'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
-                'winner' => $winner
+                'winner' => $game->getWinner()
             ]);
         }
         if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O){
-            $game->setUserOCount($game->getUserOCount() + Games::$boardCost[$data['itemNumber']]);
-            if (in_array($game->getUserOCount(), Games::$winCombinations)){
+            $game->updateUserOCount($data['itemNumber']);
+            if ($game->hasGameWinner()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
-            } else {
-                $game->setWhoseMove(Games::MOVE_X);
             }
         } else if ($game->getUserX()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_X) {
-            $game->setUserXCount($game->getUserXCount() + Games::$boardCost[$data['itemNumber']]);
-            if (in_array($game->getUserXCount(), Games::$winCombinations)){
+            $game->updateUserXCount($data['itemNumber']);
+            if ($game->hasGameWinner()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
-            } else {
-                $game->setWhoseMove(Games::MOVE_O);
             }
         } else {
             return View::create([
                 'status' => false,
                 'message' => 'Fatal bug'
             ]);
-        }
-        $winner = null;
-        if ($game->getStatus() === Games::STATUS_FINISHED_GAME){
-            if ($game->getWhoseMove() === Games::MOVE_O){
-                $winner = $game->getUserO()->getName();
-            } else {
-                $winner = $game->getUserX()->getName();
-            }
         }
         $game->setLastMove(new \DateTime());
         $em = $this->getManager();
@@ -161,7 +146,7 @@ class GamesController extends BaseController
         return View::create([
             'status' => true,
             'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
-            'winner' => $winner
+            'winner' => $game->getWinner()
         ]);
     }
 
@@ -236,6 +221,11 @@ class GamesController extends BaseController
             'userId' => $data['userId'],
             'gameId' => $data['gameId'],
         ]);
+    }
+
+    public function getTest()
+    {
+
     }
 
     private function getActiveGames()
