@@ -119,7 +119,7 @@ class GamesController extends BaseController
             return View::create([
                 'status' => true,
                 'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
-                'winner' => $game->getWinner()
+                'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
             ]);
         }
         if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O){
@@ -146,7 +146,7 @@ class GamesController extends BaseController
         return View::create([
             'status' => true,
             'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
-            'winner' => $game->getWinner()->getName()
+            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
         ]);
     }
 
@@ -184,7 +184,7 @@ class GamesController extends BaseController
         }
         return View::create([
             'status' => $game->hasGameWinner(),
-            'winner' => $game->getWinner()->getName()
+            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
         ]);
     }
 
@@ -232,6 +232,9 @@ class GamesController extends BaseController
             'userId' => $request->get('userId'),
             'gameId' => $request->get('gameId')
         ];
+        return View::create([
+            'status' => true
+        ]);
         if (empty($data['userId']) || empty($data['gameId'])){
             return View::create([
                 'status' => false,

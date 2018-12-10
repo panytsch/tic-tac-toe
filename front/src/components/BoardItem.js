@@ -21,13 +21,16 @@ class Item extends React.Component {
     }
 
     myTurn(){
-        if (this.props.data.game.myTurn){
-            this.props.makeTurn(
-                this.props.data.data.userId,
-                this.props.data.game.gameId,
-                this.props.number
-            );
-        }
+        let timeoutId = setTimeout( () => {
+                this.props.isMyTurn(this.props.data.data.userId, this.props.data.game.gameId,);
+            },1000);
+        this.props.makeTurn(
+            this.props.data.data.userId,
+            this.props.data.game.gameId,
+            this.props.number,
+            timeoutId
+        );
+
     }
 
     render() {
@@ -41,21 +44,19 @@ class Item extends React.Component {
                     borderBottom: types[number][2] && '2px solid black',
                     borderLeft: types[number][3] && '2px solid black',
                 }}
-                onClick={(this.props.data.game.myTurn && this.props.data.currentGame[number])
-                    ? () => {}
-                    : () => this.myTurn()
+                onClick={(this.props.data.game.myTurn && !this.props.data.currentGame[number])
+                    ? () => this.myTurn() : () => {}
                 }
             >
-                {this.props.data.currentGame[number]
-                    ? this.props.data.data.type
-                    : ''}
+                {this.props.data.currentGame[number]}
             </div>
         );
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    makeTurn: (userId, gameId, itemNumber) => dispatch(methods.makeTurn(userId, gameId, itemNumber))
+    makeTurn: (userId, gameId, itemNumber, timeoutId) => dispatch(methods.makeTurn(userId, gameId, itemNumber, timeoutId)),
+    isMyTurn: (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId)),
 });
 
 const mapStateToProps = state => ({

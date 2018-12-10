@@ -194,7 +194,7 @@ class Games
      */
     public function updateUserOCount(int $value) :self
     {
-        $count = json_encode($this->userOCount);
+        $count = json_decode($this->userOCount);
         if ($count){
             $count[] = $value;
         } else {
@@ -210,7 +210,7 @@ class Games
      */
     public function updateUserXCount(int $value) :self
     {
-        $count = json_encode($this->userXCount);
+        $count = json_decode($this->userXCount);
         if ($count){
             $count[] = $value;
         } else {

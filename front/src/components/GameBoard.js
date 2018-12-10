@@ -13,23 +13,39 @@ class GameBoard extends React.Component{
         }, 2000);
         props.setTimeoutId(timeoutId);
     }
+
+    componentDidMount() {
+        console.log(!this.props.data.game.myTurn);
+        console.log(this.props.data.isMyTurnTimeoutId);
+        console.log(this.props.data);
+        if (!this.props.data.game.myTurn && this.props.data.isMyTurnTimeoutId === true){
+            let timeoutId = setInterval(() => {
+                this.props.isMyTurn(this.props.data.data.userId, this.props.data.game.gameId);
+            }, 1000);
+            this.props.setTimeoutTurnId(timeoutId);
+        }
+    }
+
     render() {
         return (
-            <div className='game-board-wrap'>
-                <div className="point">
-                    <BoardItem number={1} text='x'/>
-                    <BoardItem number={4} text='o'/>
-                    <BoardItem number={7} text='x'/>
-                </div>
-                <div className="point">
-                    <BoardItem number={2} text='o'/>
-                    <BoardItem number={5} text='o'/>
-                    <BoardItem number={8} text='x'/>
-                </div>
-                <div className="point">
-                    <BoardItem number={3} text='x'/>
-                    <BoardItem number={6} text='o'/>
-                    <BoardItem number={9} text='x'/>
+            <div>
+                {this.props.data.data.type && <h4>Your letter is {this.props.data.data.type}</h4>}
+                <div className='game-board-wrap'>
+                    <div className="point">
+                        <BoardItem number={1}/>
+                        <BoardItem number={4}/>
+                        <BoardItem number={7}/>
+                    </div>
+                    <div className="point">
+                        <BoardItem number={2}/>
+                        <BoardItem number={5}/>
+                        <BoardItem number={8}/>
+                    </div>
+                    <div className="point">
+                        <BoardItem number={3}/>
+                        <BoardItem number={6}/>
+                        <BoardItem number={9}/>
+                    </div>
                 </div>
             </div>
         );
@@ -42,7 +58,13 @@ const mapDispatchToProps = dispatch => ({
     setTimeoutId: timeoutId => dispatch({
         type: 'SAVE_TIMEOUT',
         timeoutId: timeoutId
-    })
+    }),
+    setTimeoutTurnId: timeoutId => dispatch({
+        type: 'SAVE_TIMEOUT_OTHER',
+        timeoutId: timeoutId
+    }),
+    isMyTurn: (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId))
+
 });
 
 const mapStateToProps = state => ({

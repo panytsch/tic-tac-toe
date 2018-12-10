@@ -48,7 +48,7 @@ const methods = {
                 });
             })
     },
-    makeTurn: (userId, gameId, itemNumber) => dispatch => {
+    makeTurn: (userId, gameId, itemNumber, timeoutId) => dispatch => {
         axios.post(`${host}games/turn`,
             {
                 userId: userId,
@@ -56,7 +56,6 @@ const methods = {
                 itemNumber: itemNumber
             })
             .then(({data}) => {
-                console.log(data);
                 if (data.status){
                     if (data.win){
                         // set winner
@@ -64,12 +63,32 @@ const methods = {
                     dispatch({
                         type: 'MAKE_TURN',
                         payload: {
-                            itemNumber: itemNumber
+                            itemNumber: itemNumber,
+                            timeoutId: timeoutId
                         }
                     });
                 }
             })
         ;
+    },
+    isMyTurn: (userId, gameId) => dispatch => {
+        axios.get(`${host}games/request-to-turn`, {
+            params: {
+                userId: userId,
+                gameId: gameId
+            }
+        })
+            .then(({data}) => {
+                if (data.status){
+                    dispatch({
+                        type: 'MY_TURN_FETCHED',
+                        payload: {
+                            me: data.data.me,
+                            opponent: data.data.opponent
+                        }
+                    })
+                }
+            })
     }
 };
 

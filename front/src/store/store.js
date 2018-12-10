@@ -1,6 +1,10 @@
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
+import methods from "./methods";
+import axios from "axios";
+
+// let isMyTurn = (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId));
 
 function userData(
     state = {
@@ -10,21 +14,22 @@ function userData(
             userId: null,
         },
         currentGame: {
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false,
-            7: false,
-            8: false,
-            9: false
+            1: null, //null, 'x' or 'o'
+            2: null,
+            3: null,
+            4: null,
+            5: null,
+            6: null,
+            7: null,
+            8: null,
+            9: null
         },
         game: {
             myTurn: null,
             gameId: null
         },
         timeoutId: null,
+        isMyTurnTimeoutId: null
     },
     action
 ) {
@@ -37,16 +42,26 @@ function userData(
             state.data.type = action.payload.type;
             state.game.myTurn = action.payload.type === 'o';
             state.game.gameId = action.payload.gameId;
+            if (!state.game.myTurn) {
+                state.isMyTurnTimeoutId = true;
+            }
             clearInterval(state.timeoutId);
+            state.timeoutId = null;
             return {...state};
         case 'PENDING_GAME':
             state.game.gameId = action.payload.gameId;
             return state;
+        case 'SAVE_TIMEOUT_OTHER':
+            clearInterval(state.isMyTurnTimeoutId);
+            state.isMyTurnTimeoutId = action.timeoutId;
+            return state;
         case 'SAVE_TIMEOUT':
+            clearInterval(state.timeoutId);
             state.timeoutId = action.timeoutId;
             return state;
         case 'CLEAR_INTERVAL':
             clearInterval(state.timeoutId);
+            state.timeoutId = null;
             return state;
         case 'LEAVE_GAME':
             state.data.type = null;
@@ -56,6 +71,18 @@ function userData(
         case 'MAKE_TURN':
             state.currentGame[action.payload.itemNumber] = false;
             state.game.myTurn = false;
+            state.timeoutId = action.payload.timeoutId;
+            return {...state};
+        case 'MY_TURN_FETCHED':
+            action.payload.me.map(i=>{
+                state.currentGame[i] = state.data.type
+            });
+            action.payload.opponent.map(i=>{
+                state.currentGame[i] = state.data.type === 'x' ? 'o' : 'x'
+            });
+            state.game.myTurn = true;
+            clearInterval(state.isMyTurnTimeoutId);
+            state.isMyTurnTimeoutId = null;
             return {...state};
         default:
             return state;
