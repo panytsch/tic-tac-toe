@@ -122,12 +122,12 @@ class GamesController extends BaseController
                 'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
             ]);
         }
-        if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O){
+        if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_X){
             $game->updateUserOCount($data['itemNumber']);
             if ($game->hasGameWinner()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
             }
-        } else if ($game->getUserX()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_X) {
+        } else if ($game->getUserX()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O) {
             $game->updateUserXCount($data['itemNumber']);
             if ($game->hasGameWinner()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);

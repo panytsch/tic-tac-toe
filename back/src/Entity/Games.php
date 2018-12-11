@@ -233,10 +233,10 @@ class Games
      */
     public function getWinner() :?Users
     {
-        if ($this->status === self::STATUS_FINISHED_GAME){
-            if ($this->whoseMove === self::MOVE_X){
+        if ($this->status == self::STATUS_FINISHED_GAME){
+            if ($this->whoseMove == self::MOVE_X){
                 return $this->userX;
-            } else if ($this->whoseMove === self::MOVE_O){
+            } else if ($this->whoseMove == self::MOVE_O){
                 return $this->userO;
             }
         } 
