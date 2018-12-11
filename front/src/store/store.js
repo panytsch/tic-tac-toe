@@ -1,10 +1,6 @@
 import { createStore, applyMiddleware, combineReducers } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
-import methods from "./methods";
-import axios from "axios";
-
-// let isMyTurn = (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId));
 
 function userData(
     state = {
@@ -69,15 +65,15 @@ function userData(
             state.game.myTurn = null;
             return {...state};
         case 'MAKE_TURN':
-            state.currentGame[action.payload.itemNumber] = false;
+            state.currentGame[action.payload.itemNumber] = state.data.type;
             state.game.myTurn = false;
             state.timeoutId = action.payload.timeoutId;
             return {...state};
         case 'MY_TURN_FETCHED':
-            action.payload.me.map(i=>{
+            action.payload.me && action.payload.me.map(i=>{
                 state.currentGame[i] = state.data.type
             });
-            action.payload.opponent.map(i=>{
+            action.payload.opponent && action.payload.opponent.map(i=>{
                 state.currentGame[i] = state.data.type === 'x' ? 'o' : 'x'
             });
             state.game.myTurn = true;

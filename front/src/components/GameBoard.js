@@ -14,7 +14,7 @@ class GameBoard extends React.Component{
         props.setTimeoutId(timeoutId);
     }
 
-    componentDidMount() {
+    componentDidUpdate() {
         console.log(!this.props.data.game.myTurn);
         console.log(this.props.data.isMyTurnTimeoutId);
         console.log(this.props.data);

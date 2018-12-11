@@ -232,9 +232,6 @@ class GamesController extends BaseController
             'userId' => $request->get('userId'),
             'gameId' => $request->get('gameId')
         ];
-        return View::create([
-            'status' => true
-        ]);
         if (empty($data['userId']) || empty($data['gameId'])){
             return View::create([
                 'status' => false,
@@ -249,7 +246,7 @@ class GamesController extends BaseController
                 'message' => 'Game not found',
             ]);
         }
-        if ($game->getWhoseMove() === Games::MOVE_O && $game->getUserO()->getId() === (int)$data['userId']){
+        if ($game->getWhoseMove() == Games::MOVE_X && $game->getUserO()->getId() === (int)$data['userId']){
             return View::create([
                 'status' => true,
                 'data' => [
@@ -257,7 +254,7 @@ class GamesController extends BaseController
                     'opponent' => $game->getUserXCount()
                 ]
             ]);
-        } else if ($game->getWhoseMove() === Games::MOVE_X && $game->getUserX()->getId() === (int)$data['userId']) {
+        } else if (($game->getWhoseMove() == Games::MOVE_O) && ($game->getUserX()->getId() === (int)$data['userId'])) {
             return View::create([
                 'status' => true,
                 'data' => [
@@ -267,7 +264,7 @@ class GamesController extends BaseController
             ]);
         }
         return View::create([
-            'status' => false
+            'status' => false,$game->getWhoseMove(),$game->getUserX()->getId() === (int)$data['userId']
         ]);
     }
 
