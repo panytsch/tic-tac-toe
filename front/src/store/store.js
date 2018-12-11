@@ -10,21 +10,26 @@ function userData(
             userId: null,
         },
         currentGame: {
-            1: false,
-            2: false,
-            3: false,
-            4: false,
-            5: false,
-            6: false,
-            7: false,
-            8: false,
-            9: false
+            1: null, //null, 'x' or 'o'
+            2: null,
+            3: null,
+            4: null,
+            5: null,
+            6: null,
+            7: null,
+            8: null,
+            9: null
         },
         game: {
             myTurn: null,
-            gameId: null
+            gameId: null,
+            winner: null,
+            pat:null,
+            opponentName: null
         },
         timeoutId: null,
+        isMyTurnTimeoutId: null,
+        winTimeout: null
     },
     action
 ) {
@@ -35,27 +40,106 @@ function userData(
             return { ...state };
         case 'FOUNDED_GAME':
             state.data.type = action.payload.type;
-            state.game.myTurn = action.payload.type === 'o';
+            state.game.myTurn = action.payload.type === 'x';
             state.game.gameId = action.payload.gameId;
+            state.game.opponentName = action.payload.opponentName;
+            if (!state.game.myTurn) {
+                state.isMyTurnTimeoutId = true;
+            }
             clearInterval(state.timeoutId);
+            state.timeoutId = null;
             return {...state};
         case 'PENDING_GAME':
             state.game.gameId = action.payload.gameId;
             return state;
+        case 'SAVE_TIMEOUT_OTHER':
+            clearInterval(state.isMyTurnTimeoutId);
+            state.isMyTurnTimeoutId = action.timeoutId;
+            return state;
         case 'SAVE_TIMEOUT':
+            clearInterval(state.timeoutId);
             state.timeoutId = action.timeoutId;
             return state;
         case 'CLEAR_INTERVAL':
             clearInterval(state.timeoutId);
+            state.timeoutId = null;
             return state;
         case 'LEAVE_GAME':
             state.data.type = null;
             state.game.gameId = null;
             state.game.myTurn = null;
+            state.currentGame = {
+                1: null, //null, 'x' or 'o'
+                2: null,
+                3: null,
+                4: null,
+                5: null,
+                6: null,
+                7: null,
+                8: null,
+                9: null
+            };
+            state.game = {
+                myTurn: null,
+                gameId: null,
+                winner: null,
+                pat:null,
+                opponentName: null
+            };
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.isMyTurnTimeoutId = null;
+            state.timeoutId = null;
             return {...state};
         case 'MAKE_TURN':
-            state.currentGame[action.payload.itemNumber] = false;
+            state.currentGame[action.payload.itemNumber] = state.data.type;
             state.game.myTurn = false;
+            state.timeoutId = action.payload.timeoutId;
+            return {...state};
+        case 'MY_TURN_FETCHED':
+            action.payload.me && action.payload.me.map(i=>{
+                state.currentGame[i] = state.data.type
+            });
+            action.payload.opponent && action.payload.opponent.map(i=>{
+                state.currentGame[i] = state.data.type === 'o' ? 'x' : 'o'
+            });
+            state.game.myTurn = true;
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.isMyTurnTimeoutId = null;
+            return {...state};
+        case 'GAME_HAS_WINNER':
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.game.winner = action.payload.winner;
+            return {...state};
+        case 'PAT_GAME':
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.game.pat = true;
+            return {...state};
+        case 'NEW_GAME':
+            state.timeoutId = action.payload.timeoutId;
+            state.data.type = null;
+            state.currentGame = {
+                1: null, //null, 'x' or 'o'
+                2: null,
+                3: null,
+                4: null,
+                5: null,
+                6: null,
+                7: null,
+                8: null,
+                9: null
+            };
+            state.game = {
+                myTurn: null,
+                gameId: null,
+                winner: null,
+                pat:null,
+                opponentName: null
+            };
+            state.isMyTurnTimeoutId = null;
             return {...state};
         default:
             return state;

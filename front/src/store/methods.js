@@ -27,7 +27,8 @@ const methods = {
                         type: 'FOUNDED_GAME',
                         payload: {
                             gameId: data.gameId,
-                            type: data.type
+                            type: data.type,
+                            opponentName: data.opponentName
                         }
                     });
                 } else if (data.pending && data.gameId){
@@ -48,7 +49,7 @@ const methods = {
                 });
             })
     },
-    makeTurn: (userId, gameId, itemNumber) => dispatch => {
+    makeTurn: (userId, gameId, itemNumber, timeoutId) => dispatch => {
         axios.post(`${host}games/turn`,
             {
                 userId: userId,
@@ -56,20 +57,84 @@ const methods = {
                 itemNumber: itemNumber
             })
             .then(({data}) => {
-                console.log(data);
                 if (data.status){
                     if (data.win){
-                        // set winner
+                        dispatch({
+                            type: 'GAME_HAS_WINNER',
+                            payload: {
+                                winner: data.winner
+                            }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
+                        });
                     }
                     dispatch({
                         type: 'MAKE_TURN',
                         payload: {
-                            itemNumber: itemNumber
+                            itemNumber: itemNumber,
+                            timeoutId: timeoutId
+                        }
+                    });
+
+                }
+            })
+        ;
+    },
+    isMyTurn: (userId, gameId) => dispatch => {
+        axios.get(`${host}games/request-to-turn`, {
+            params: {
+                userId: userId,
+                gameId: gameId
+            }
+        })
+            .then(({data}) => {
+                if (data.status){
+                    if (data.win){
+                        dispatch({
+                            type: 'GAME_HAS_WINNER',
+                            payload: {
+                                winner: data.winner
+                            }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
+                        });
+                    }
+                    dispatch({
+                        type: 'MY_TURN_FETCHED',
+                        payload: {
+                            me: data.data.me,
+                            opponent: data.data.opponent
                         }
                     });
                 }
             })
-        ;
+    },
+    isGameWin: gameId => dispatch => {
+        axios.get(`${host}games/request-to-win`, {
+            params: {
+                gameId: gameId
+            }
+        })
+            .then(({data}) => {
+                if (data.status){
+                    if (data.win){
+                        dispatch({
+                            type: 'GAME_HAS_WINNER',
+                            payload: {
+                                winner: data.winner
+                            }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
+                        });
+                    }
+                }
+            })
     }
 };
 

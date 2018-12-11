@@ -20,7 +20,7 @@ class NewGamePage extends React.Component{
                 <div className='flex-center-wrap' style={{width: '50%'}}>
                     <GameBoard/>
                     <LinkButton
-                        text='leave game'
+                        text='Abandon game'
                         classList={['btn', 'btn-light', 'button-main']}
                         route='/'
                         onClick={()=>this.props.leaveGame(this.props.data.data.userId, this.props.data.game.gameId)}

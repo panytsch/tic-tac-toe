@@ -27,7 +27,7 @@ class StartPage extends React.Component{
                         classList={['btn', 'btn-light', 'button-main']}
                     />
                     <LinkButton
-                        text='new game'
+                        text='New game'
                         classList={['btn', 'btn-light', 'button-main']}
                         route='/new-game'
                         onClick={()=>this.props.data.data.userId
