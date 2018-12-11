@@ -102,13 +102,35 @@ const methods = {
                         dispatch({
                             type: 'PAT_GAME'
                         });
-                    } else {
+                    }
+                    dispatch({
+                        type: 'MY_TURN_FETCHED',
+                        payload: {
+                            me: data.data.me,
+                            opponent: data.data.opponent
+                        }
+                    });
+                }
+            })
+    },
+    isGameWin: gameId => dispatch => {
+        axios.get(`${host}games/request-to-win`, {
+            params: {
+                gameId: gameId
+            }
+        })
+            .then(({data}) => {
+                if (data.status){
+                    if (data.win){
                         dispatch({
-                            type: 'MY_TURN_FETCHED',
+                            type: 'GAME_HAS_WINNER',
                             payload: {
-                                me: data.data.me,
-                                opponent: data.data.opponent
+                                winner: data.winner
                             }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
                         });
                     }
                 }

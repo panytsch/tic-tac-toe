@@ -81,9 +81,9 @@ class Games
     private $lastMove;
 
     /**
-     * @return \DateTime
+     * @return null|\DateTime
      */
-    public function getLastMove(): \DateTime
+    public function getLastMove(): ?\DateTime
     {
         return $this->lastMove;
     }
@@ -225,7 +225,7 @@ class Games
      */
     public function hasGameWinner() :bool 
     {
-        return $this->isUserOWinner() || $this->isUserXWinner();
+        return $this->isUserOWinner() || $this->isUserXWinner() || ($this->getStatus() === Games::STATUS_FINISHED_GAME);
     }
 
     public function isPat() :bool

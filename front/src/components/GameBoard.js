@@ -16,6 +16,9 @@ class GameBoard extends React.Component{
     }
 
     componentDidUpdate() {
+        setTimeout(()=> {
+            this.props.isGameWin(this.props.data.game.gameId);
+        },70000);
         if (!this.props.data.game.myTurn && this.props.data.isMyTurnTimeoutId === true){
             let timeoutId = setInterval(() => {
                 this.props.isMyTurn(this.props.data.data.userId, this.props.data.game.gameId);
@@ -44,10 +47,10 @@ class GameBoard extends React.Component{
                     classList={['btn', 'btn-light', 'button-main']}
                 />}
                 {this.props.data.data.type && <h5>Your letter is {this.props.data.data.type}</h5>}
-                {(!pat && !winner) && (this.props.data.game.myTurn ? <p>Your turn</p> : <p>Opponent`s turn</p>)}
+                {(!pat && !winner && this.props.data.game.opponentName) && (this.props.data.game.myTurn ? <p>Your turn</p> : <p>Opponent`s turn</p>)}
                 {(pat || winner) &&
                 <Button
-                    text={'The game is a draw'}
+                    text={'New Game'}
                     onClick={()=>{
                         let timeoutId = setInterval(() => {
                             this.props.searchOpponent(this.props.data.data.userId, this.props.data.game.gameId || null);
@@ -95,8 +98,8 @@ const mapDispatchToProps = dispatch => ({
         payload: {
             timeoutId: timeoutId
         }
-    })
-
+    }),
+    isGameWin: gameId => dispatch(methods.isGameWin(gameId)),
 });
 
 const mapStateToProps = state => ({
