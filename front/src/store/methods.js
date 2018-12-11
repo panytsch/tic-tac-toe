@@ -27,7 +27,8 @@ const methods = {
                         type: 'FOUNDED_GAME',
                         payload: {
                             gameId: data.gameId,
-                            type: data.type
+                            type: data.type,
+                            opponentName: data.opponentName
                         }
                     });
                 } else if (data.pending && data.gameId){
@@ -58,7 +59,16 @@ const methods = {
             .then(({data}) => {
                 if (data.status){
                     if (data.win){
-                        // set winner
+                        dispatch({
+                            type: 'GAME_HAS_WINNER',
+                            payload: {
+                                winner: data.winner
+                            }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
+                        });
                     }
                     dispatch({
                         type: 'MAKE_TURN',

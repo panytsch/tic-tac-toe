@@ -89,7 +89,8 @@ class GamesController extends BaseController
         return View::create([
             'status' => !!$game->getId(),
             'gameId' => $game->getId(),
-            'type' => $type
+            'type' => $type,
+            'opponentName' => $game->getUserO()->getId() === $user->getId() ? $game->getUserX()->getName() : $game->getUserO()->getName()
         ]);
     }
 

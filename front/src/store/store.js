@@ -22,7 +22,10 @@ function userData(
         },
         game: {
             myTurn: null,
-            gameId: null
+            gameId: null,
+            winner: null,
+            pat:null,
+            opponentName: null
         },
         timeoutId: null,
         isMyTurnTimeoutId: null
@@ -38,6 +41,7 @@ function userData(
             state.data.type = action.payload.type;
             state.game.myTurn = action.payload.type === 'x';
             state.game.gameId = action.payload.gameId;
+            state.game.opponentName = action.payload.opponentName;
             if (!state.game.myTurn) {
                 state.isMyTurnTimeoutId = true;
             }
@@ -80,6 +84,16 @@ function userData(
             state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
             state.timeoutId && clearInterval(state.timeoutId);
             state.isMyTurnTimeoutId = null;
+            return {...state};
+        case 'GAME_HAS_WINNER':
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.game.winner = action.payload.winner;
+            return {...state};
+        case 'PAT_GAME':
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
+            state.game.pat = true;
             return {...state};
         default:
             return state;

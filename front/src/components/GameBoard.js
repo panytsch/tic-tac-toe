@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 
 import BoardItem from "./BoardItem";
 import methods from "../store/methods";
+import Button from "./Button";
 
 class GameBoard extends React.Component{
     constructor(props){
@@ -24,8 +25,24 @@ class GameBoard extends React.Component{
     }
 
     render() {
+        const {pat, winner, opponentName} = this.props.data.game;
         return (
             <div>
+                {(this.props.data.data.name && opponentName && !pat && !winner)
+                && <Button
+                    text={`${this.props.data.data.name} vs ${this.props.data.game.opponentName}`}
+                    classList={['btn', 'btn-light', 'button-main']}
+                />}
+                {winner
+                && <Button
+                    text={`${winner} WIN!!!`}
+                    classList={['btn', 'btn-light', 'button-main']}
+                />}
+                {pat
+                && <Button
+                    text={'The game is a draw'}
+                    classList={['btn', 'btn-light', 'button-main']}
+                />}
                 {this.props.data.data.type && <h4>Your letter is {this.props.data.data.type}</h4>}
                 <div className='game-board-wrap'>
                     <div className="point">
