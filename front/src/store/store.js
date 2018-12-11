@@ -36,7 +36,7 @@ function userData(
             return { ...state };
         case 'FOUNDED_GAME':
             state.data.type = action.payload.type;
-            state.game.myTurn = action.payload.type === 'o';
+            state.game.myTurn = action.payload.type === 'x';
             state.game.gameId = action.payload.gameId;
             if (!state.game.myTurn) {
                 state.isMyTurnTimeoutId = true;
@@ -74,7 +74,7 @@ function userData(
                 state.currentGame[i] = state.data.type
             });
             action.payload.opponent && action.payload.opponent.map(i=>{
-                state.currentGame[i] = state.data.type === 'x' ? 'o' : 'x'
+                state.currentGame[i] = state.data.type === 'o' ? 'x' : 'o'
             });
             state.game.myTurn = true;
             clearInterval(state.isMyTurnTimeoutId);
