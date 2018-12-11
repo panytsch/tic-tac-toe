@@ -15,9 +15,6 @@ class GameBoard extends React.Component{
     }
 
     componentDidUpdate() {
-        console.log(!this.props.data.game.myTurn);
-        console.log(this.props.data.isMyTurnTimeoutId);
-        console.log(this.props.data);
         if (!this.props.data.game.myTurn && this.props.data.isMyTurnTimeoutId === true){
             let timeoutId = setInterval(() => {
                 this.props.isMyTurn(this.props.data.data.userId, this.props.data.game.gameId);

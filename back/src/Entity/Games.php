@@ -228,6 +228,12 @@ class Games
         return $this->isUserOWinner() || $this->isUserXWinner();
     }
 
+    public function isPat() :bool
+    {
+        $arr = array_merge($this->getUserXCount() ?? [], $this->getUserOCount() ?? []);
+        return (!empty($arr) && count($arr) === 9);
+    }
+
     /**
      * @return Users|null
      */
@@ -275,5 +281,11 @@ class Games
             ||
         (in_array(3,$a) && in_array(5,$a) && in_array(7,$a))
         );
+    }
+
+    public function switchWhoseMove() :self
+    {
+        $this->whoseMove = !$this->whoseMove;
+        return $this;
     }
 }

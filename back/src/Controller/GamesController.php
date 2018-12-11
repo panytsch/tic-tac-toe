@@ -124,13 +124,17 @@ class GamesController extends BaseController
         }
         if ($game->getUserO()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_X){
             $game->updateUserOCount($data['itemNumber']);
-            if ($game->hasGameWinner()){
+            if ($game->hasGameWinner() || $game->isPat()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
+            } else {
+                $game->switchWhoseMove();
             }
         } else if ($game->getUserX()->getId() === (int)$data['userId'] && $game->getWhoseMove() == Games::MOVE_O) {
             $game->updateUserXCount($data['itemNumber']);
-            if ($game->hasGameWinner()){
+            if ($game->hasGameWinner() || $game->isPat()){
                 $game->setStatus(Games::STATUS_FINISHED_GAME);
+            } else {
+                $game->switchWhoseMove();
             }
         } else {
             return View::create([
@@ -146,7 +150,8 @@ class GamesController extends BaseController
         return View::create([
             'status' => true,
             'win' => $game->getStatus() === Games::STATUS_FINISHED_GAME,
-            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
+            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null,
+            'pat' => $game->isPat()
         ]);
     }
 
@@ -184,7 +189,8 @@ class GamesController extends BaseController
         }
         return View::create([
             'status' => $game->hasGameWinner(),
-            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null
+            'winner' => $game->getWinner() ? $game->getWinner()->getName() : null,
+            'pat' => $game->isPat()
         ]);
     }
 
