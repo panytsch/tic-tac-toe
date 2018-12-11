@@ -48,7 +48,9 @@ class GamesController extends BaseController
                 return View::create([
                     'status' => true,
                     'gameId' => $currentGame->getId(),
-                    'type' => $currentGame->getUserO()->getId() === $user->getId() ? 'o' : 'x'
+                    'type' => $currentGame->getUserO()->getId() === $user->getId() ? 'o' : 'x',
+                    'opponentName' => $currentGame->getUserO()->getId() === $user->getId()
+                        ? $currentGame->getUserX()->getName() : $currentGame->getUserO()->getName()
                 ]);
             }
         }
@@ -248,10 +250,21 @@ class GamesController extends BaseController
         }
         /** @var Games $game */
         $game = $this->getDoctrine()->getRepository(Games::class)->find($data['gameId']);
-        if (!$game || $game->hasGameWinner()){
+        if (!$game){
             return View::create([
                 'status' => false,
                 'message' => 'Game not found',
+            ]);
+        } else if ($game->hasGameWinner()){
+            return View::create([
+                'status' => true,
+                'win' => true,
+                'winner' => $game->getWinner()->getName()
+            ]);
+        } else if ($game->isPat()){
+            return View::create([
+                'status' => true,
+                'pat' =>true
             ]);
         }
         if ($game->getWhoseMove() == Games::MOVE_X && $game->getUserO()->getId() === (int)$data['userId']){

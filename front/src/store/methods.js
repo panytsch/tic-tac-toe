@@ -77,6 +77,7 @@ const methods = {
                             timeoutId: timeoutId
                         }
                     });
+
                 }
             })
         ;
@@ -90,13 +91,26 @@ const methods = {
         })
             .then(({data}) => {
                 if (data.status){
-                    dispatch({
-                        type: 'MY_TURN_FETCHED',
-                        payload: {
-                            me: data.data.me,
-                            opponent: data.data.opponent
-                        }
-                    })
+                    if (data.win){
+                        dispatch({
+                            type: 'GAME_HAS_WINNER',
+                            payload: {
+                                winner: data.winner
+                            }
+                        });
+                    } else if (data.pat) {
+                        dispatch({
+                            type: 'PAT_GAME'
+                        });
+                    } else {
+                        dispatch({
+                            type: 'MY_TURN_FETCHED',
+                            payload: {
+                                me: data.data.me,
+                                opponent: data.data.opponent
+                            }
+                        });
+                    }
                 }
             })
     }

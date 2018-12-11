@@ -43,7 +43,19 @@ class GameBoard extends React.Component{
                     text={'The game is a draw'}
                     classList={['btn', 'btn-light', 'button-main']}
                 />}
-                {this.props.data.data.type && <h4>Your letter is {this.props.data.data.type}</h4>}
+                {this.props.data.data.type && <h5>Your letter is {this.props.data.data.type}</h5>}
+                {(!pat && !winner) && (this.props.data.game.myTurn ? <p>Your turn</p> : <p>Opponent`s turn</p>)}
+                {(pat || winner) &&
+                <Button
+                    text={'The game is a draw'}
+                    onClick={()=>{
+                        let timeoutId = setInterval(() => {
+                            this.props.searchOpponent(this.props.data.data.userId, this.props.data.game.gameId || null);
+                        }, 2000);
+                        this.props.newGame(timeoutId);
+                    }}
+                    classList={['btn', 'btn-light', 'button-main']}
+                />}
                 <div className='game-board-wrap'>
                     <div className="point">
                         <BoardItem number={1}/>
@@ -77,7 +89,13 @@ const mapDispatchToProps = dispatch => ({
         type: 'SAVE_TIMEOUT_OTHER',
         timeoutId: timeoutId
     }),
-    isMyTurn: (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId))
+    isMyTurn: (userId, gameId) => dispatch(methods.isMyTurn(userId, gameId)),
+    newGame: (timeoutId) => dispatch({
+        type:'NEW_GAME',
+        payload: {
+            timeoutId: timeoutId
+        }
+    })
 
 });
 

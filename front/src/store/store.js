@@ -95,6 +95,28 @@ function userData(
             state.timeoutId && clearInterval(state.timeoutId);
             state.game.pat = true;
             return {...state};
+        case 'NEW_GAME':
+            state.timeoutId = action.payload.timeoutId;
+            state.currentGame = {
+                1: null, //null, 'x' or 'o'
+                2: null,
+                3: null,
+                4: null,
+                5: null,
+                6: null,
+                7: null,
+                8: null,
+                9: null
+            };
+            state.game = {
+                myTurn: null,
+                    gameId: null,
+                    winner: null,
+                    pat:null,
+                    opponentName: null
+            };
+            state.isMyTurnTimeoutId = null;
+            return {...state};
         default:
             return state;
     }
