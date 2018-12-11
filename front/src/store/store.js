@@ -77,7 +77,8 @@ function userData(
                 state.currentGame[i] = state.data.type === 'o' ? 'x' : 'o'
             });
             state.game.myTurn = true;
-            clearInterval(state.isMyTurnTimeoutId);
+            state.isMyTurnTimeoutId && clearInterval(state.isMyTurnTimeoutId);
+            state.timeoutId && clearInterval(state.timeoutId);
             state.isMyTurnTimeoutId = null;
             return {...state};
         default:

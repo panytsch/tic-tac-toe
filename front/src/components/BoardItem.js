@@ -21,7 +21,7 @@ class Item extends React.Component {
     }
 
     myTurn(){
-        let timeoutId = setTimeout( () => {
+        let timeoutId = setInterval( () => {
                 this.props.isMyTurn(this.props.data.data.userId, this.props.data.game.gameId,);
             },1000);
         this.props.makeTurn(
