@@ -5,9 +5,9 @@
 <li>run: composer install</li>
 <li>create empty DB (MySQL)</li>
 <li>paste your db connection in file .env or .env.local</li>
-<li>run: php bin/console doctrine:schema:update</li>
+<li>run: php bin/console doctrine:schema:update --force</li>
 <li>run: php bin/console server:start</li>
-<li>run: cd …/front</li>
+<li>run: cd ../front</li>
 <li>run: yarn install</li>
 <li>run: yarn start</li>
 </ul>
